@@ -75,7 +75,7 @@ public class MunicipioServiceImpl implements MunicipioService {
 			EntityManagerUtil.closeEntityManager(entityManager);
 		}
 	}
-	
+
 	@Override
 	public void inserisciNuovo(Municipio municipioInstance) throws Exception {
 		// questo è come una connection
@@ -168,6 +168,42 @@ public class MunicipioServiceImpl implements MunicipioService {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public List<Municipio> cercaTutteLeDescrizioniConIniziele(String iniziale) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+
+			municipioDAO.setEntityManager(entityManager);
+
+			return municipioDAO.findAllByDescrizioneIniziaCon(iniziale);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public List<Municipio> cercaTuttiAbitantiMinorenni() throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+
+			municipioDAO.setEntityManager(entityManager);
+
+			return municipioDAO.findAllByAbitantiMinorenni();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}finally {
 			EntityManagerUtil.closeEntityManager(entityManager);
 		}
 	}

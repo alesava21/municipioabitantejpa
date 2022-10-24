@@ -19,6 +19,10 @@ public interface AbitanteService {
 
 	public List<Abitante> cercaTuttiGliAbitantiConNome(String nome) throws Exception;
 	
+	public List<Abitante> cercaTuttiGliAbitantiConCognome(String cognome) throws Exception;
+	
+	public List<Abitante> CercaCodiceMunicipioIniziaPer(String codice) throws Exception;
+	
 	//per injection
 	public void setAbitanteDAO(AbitanteDAO abitanteDAO);
 

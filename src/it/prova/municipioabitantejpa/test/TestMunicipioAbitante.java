@@ -42,6 +42,16 @@ public class TestMunicipioAbitante {
 
 			testLazyInitExc(municipioService, abitanteService);
 
+			testDescrizioneConIniziale(municipioService);
+
+			testAbitanteCheIniziaConCognomeIniziale(abitanteService, municipioService);
+			System.out.println(
+					"In tabella Municipio ci sono " + municipioService.listAllMunicipi().size() + " elementi.");
+
+			testCodiceMunicipioIniziaCon(municipioService, abitanteService);
+			
+			testAbitantiMinorenni(abitanteService, municipioService);
+
 		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {
@@ -176,6 +186,100 @@ public class TestMunicipioAbitante {
 		// se usiamo un caricamento EAGER risolviamo...dipende da cosa ci serve!!!
 		// municipioService.caricaSingoloMunicipioConAbitanti(...);
 		System.out.println(".......testLazyInitExc fine: PASSED.............");
+	}
+
+	public static void testDescrizioneConIniziale(MunicipioService municipioService) throws Exception {
+		System.out.println(".......testDescrizioneConIniziale inizio.............");
+		List<Municipio> listaMunicipio = municipioService.listAllMunicipi();
+		if (listaMunicipio.isEmpty()) {
+			throw new RuntimeException("testDescrizioneConIniziale fallito: non ci sono municipi a cui collegarci ");
+		}
+		if (municipioService.cercaTutteLeDescrizioniConIniziele("m").isEmpty()) {
+			throw new RuntimeException(
+					"testDescrizioneConIniziale fallito: non ci sono descrizioni dei municipi che inizino cosi. ");
+
+		}
+
+		System.out.println(".......testDescrizioneConIniziale fine: PASSED.............");
+	}
+
+	public static void testAbitanteCheIniziaConCognomeIniziale(AbitanteService abitanteService,
+			MunicipioService municipioService) throws Exception {
+		System.out.println(".......testAbitanteCheIniziaConCognomeIniziale inizio.............");
+
+		List<Municipio> listaMunicipiPresenti = municipioService.listAllMunicipi();
+		if (listaMunicipiPresenti.isEmpty())
+			throw new RuntimeException(
+					"testCercaTuttiGliAbitantiConNome fallito: non ci sono municipi a cui collegarci ");
+
+		Abitante nuovoAbitante = new Abitante("Alessandro", "a", 27, "Via Lucca");
+		Abitante nuovoAbitante2 = new Abitante("Andrea", "a", 37, "Via Roma");
+
+		nuovoAbitante.setMunicipio(listaMunicipiPresenti.get(0));
+		nuovoAbitante2.setMunicipio(listaMunicipiPresenti.get(0));
+
+		abitanteService.inserisciNuovo(nuovoAbitante);
+		abitanteService.inserisciNuovo(nuovoAbitante2);
+
+		if (abitanteService.cercaTuttiGliAbitantiConCognome("a").size() != 2)
+			throw new RuntimeException("testCercaTuttiGliAbitantiConCognome fallito: numero record inatteso ");
+
+		abitanteService.rimuovi(nuovoAbitante.getId());
+		abitanteService.rimuovi(nuovoAbitante2.getId());
+
+		System.out.println(".......testCercaTuttiGliAbitantiConCognome fine: PASSED.............");
+
+	}
+
+	public static void testCodiceMunicipioIniziaCon(MunicipioService municipioService, AbitanteService abitanteService)
+			throws Exception {
+		System.out.println(".......testCodiceMunicipioIniziaCon inizio.............");
+
+		List<Municipio> listaMunicipiPresenti = municipioService.listAllMunicipi();
+		if (listaMunicipiPresenti.isEmpty())
+			throw new RuntimeException("testCodiceMunicipioIniziaCon fallito: non ci sono municipi a cui collegarci ");
+
+		Abitante nuovoAbitante = new Abitante("Mirko", "Bassi", 27, "Via Lucca");
+		Abitante nuovoAbitante2 = new Abitante("Andrea", "Bassi", 37, "Via Roma");
+
+		nuovoAbitante.setMunicipio(listaMunicipiPresenti.get(0));
+		nuovoAbitante2.setMunicipio(listaMunicipiPresenti.get(0));
+
+		abitanteService.inserisciNuovo(nuovoAbitante);
+		abitanteService.inserisciNuovo(nuovoAbitante2);
+
+		List<Abitante> test = abitanteService.CercaCodiceMunicipioIniziaPer("I");
+
+		System.out.println(test);
+
+		System.out.println(abitanteService.CercaCodiceMunicipioIniziaPer("I"));
+
+		System.out.println(".......testCodiceMunicipioIniziaCon fine: PASSED.............");
+
+	}
+
+	public static void testAbitantiMinorenni(AbitanteService abitanteService, MunicipioService municipioService)
+			throws Exception {
+		System.out.println(".......testAbitantiMinorenni inizio.............");
+
+		List<Municipio> listaMunicipiPresenti = municipioService.listAllMunicipi();
+		if (listaMunicipiPresenti.isEmpty())
+			throw new RuntimeException("testAbitantiMinorenni fallito: non ci sono municipi a cui collegarci ");
+
+		Abitante nuovoAbitante = new Abitante("Mirko", "Bassi", 10, "Via Lucca");
+		Abitante nuovoAbitante2 = new Abitante("Andrea", "Bassi", 2, "Via Roma");
+
+		nuovoAbitante.setMunicipio(listaMunicipiPresenti.get(0));
+		nuovoAbitante2.setMunicipio(listaMunicipiPresenti.get(0));
+
+		abitanteService.inserisciNuovo(nuovoAbitante);
+		abitanteService.inserisciNuovo(nuovoAbitante2);
+
+		List<Municipio> test = municipioService.cercaTuttiAbitantiMinorenni();
+
+		System.out.println(test);
+
+		System.out.println(".......testAbitantiMinorenni fine: PASSED.............");
 	}
 
 }
